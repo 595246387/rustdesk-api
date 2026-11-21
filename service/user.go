@@ -177,7 +177,7 @@ func (us *UserService) CheckDeviceLimit(u *model.User, deviceUuid, deviceId stri
 	}
 
 	limit := Config.App.DeviceLimit
-	if u.DeviceLimit != nil {
+	if u.DeviceLimit != nil && *u.DeviceLimit != 0 {
 		limit = *u.DeviceLimit
 	}
 	if limit <= 0 {

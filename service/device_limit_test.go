@@ -81,9 +81,13 @@ func TestCheckDeviceLimit(t *testing.T) {
 		t.Fatalf("user unlimited override should pass: %v", err)
 	}
 
-	// 用户级 0 跟随全局
+	// 用户级 0 跟随全局：全局 2 时第 3 台应该被拦
 	zero := 0
 	user.DeviceLimit = &zero
+	Config.App.DeviceLimit = 2
+	if err := us.CheckDeviceLimit(user, "uuid-c", "1003"); err == nil {
+		t.Fatal("global limit 2 should block the third device")
+	}
 	Config.App.DeviceLimit = 3
 	if err := us.CheckDeviceLimit(user, "uuid-c", "1003"); err != nil {
 		t.Fatalf("limit 3 should allow third device: %v", err)
