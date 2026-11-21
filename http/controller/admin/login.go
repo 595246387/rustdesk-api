@@ -81,6 +81,8 @@ func (ct *Login) Login(c *gin.Context) {
 		msgId := "UserDisabled"
 		if u.Status == model.COMMON_STATUS_PENDING {
 			msgId = "UserPendingApproval"
+		} else if u.IsExpired() {
+			msgId = "UserExpired"
 		}
 		if needCaptcha {
 			response.Fail(c, 110, response.TranslateMsg(c, msgId))

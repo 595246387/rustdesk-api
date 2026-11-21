@@ -173,6 +173,11 @@ description = "User pending approval."
 one = "The account is pending administrator approval. You will be able to log in once approved."
 other = "The account is pending administrator approval. You will be able to log in once approved."
 
+[UserExpired]
+description = "User expired."
+one = "The account has expired. Please contact the administrator."
+other = "The account has expired. Please contact the administrator."
+
 [RegisterTooFrequent]
 description = "Register too frequent."
 one = "Too many registrations from this network. Please try again later."

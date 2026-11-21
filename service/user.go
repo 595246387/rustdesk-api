@@ -82,13 +82,21 @@ func (us *UserService) InfoByAccessToken(token string) (*model.User, *model.User
 		return u, ut
 	}
 	DB.Where("id = ?", ut.UserId).First(u)
+	// 账号已过期时视为无效登录态，后台/接口立即拒绝。
+	if u.IsExpired() {
+		return &model.User{}, ut
+	}
 	return u, ut
 }
 
 // GenerateToken 生成token
 func (us *UserService) GenerateToken(u *model.User) string {
-	if len(Jwt.Key) > 0 {
-		return Jwt.GenerateToken(u.Id)
+	if Jwt != nil && len(Jwt.Key) > 0 {
+		expireAt := time.Now().Add(us.tokenExpireDuration())
+		if capped := us.capByUserExpire(u, expireAt.Unix()); capped < expireAt.Unix() {
+			expireAt = time.Unix(capped, 0)
+		}
+		return Jwt.GenerateTokenWithExpire(u.Id, expireAt)
 	}
 	return utils.Md5(u.Username + time.Now().String())
 }
@@ -101,7 +109,7 @@ func (us *UserService) Login(u *model.User, llog *model.LoginLog) *model.UserTok
 		Token:      token,
 		DeviceUuid: llog.Uuid,
 		DeviceId:   llog.DeviceId,
-		ExpiredAt:  us.UserTokenExpireTimestamp(),
+		ExpiredAt:  us.capByUserExpire(u, us.UserTokenExpireTimestamp()),
 	}
 	DB.Create(ut)
 	llog.UserTokenId = ut.UserId
@@ -162,9 +170,9 @@ func (us *UserService) ListIdAndNameByGroupId(groupId uint) (res []*model.User) 
 	return res
 }
 
-// CheckUserEnable 判断用户是否禁用
+// CheckUserEnable 判断用户是否可用（已启用且未过期）
 func (us *UserService) CheckUserEnable(u *model.User) bool {
-	return u.Status == model.COMMON_STATUS_ENABLE
+	return u != nil && u.Status == model.COMMON_STATUS_ENABLE && !u.IsExpired()
 }
 
 // CheckDeviceLimit 检查该用户是否还能在这个设备上登录。
@@ -305,8 +313,8 @@ func (us *UserService) Delete(u *model.User) error {
 	return nil
 }
 
-// Update 更新
-func (us *UserService) Update(u *model.User) error {
+// Update 更新。expireAt 为 nil 表示不修改有效期；0 表示永久有效；>0 为到期时间（Unix 秒）。
+func (us *UserService) Update(u *model.User, expireAt *int64) error {
 	currentUser := us.InfoById(u.Id)
 	// 如果当前用户是管理员并且 IsAdmin 不为空，进行检查
 	if us.IsAdmin(currentUser) {
@@ -315,8 +323,19 @@ func (us *UserService) Update(u *model.User) error {
 		if adminCount <= 1 && (!us.IsAdmin(u) || u.Status == model.COMMON_STATUS_DISABLED) {
 			return errors.New("The last admin user cannot be disabled or demoted")
 		}
+		// 唯一管理员也不能被设置成已过期，否则会锁死后台
+		if adminCount <= 1 && expireAt != nil && *expireAt > 0 && *expireAt <= time.Now().Unix() {
+			return errors.New("The last admin user cannot be expired")
+		}
 	}
-	return DB.Model(u).Updates(u).Error
+	if err := DB.Model(u).Updates(u).Error; err != nil {
+		return err
+	}
+	// Updates 会忽略零值，有效期单独写入，这样也能把有效期清回 0（永久）。
+	if expireAt != nil {
+		return DB.Model(&model.User{}).Where("id = ?", u.Id).Update("expire_at", *expireAt).Error
+	}
+	return nil
 }
 
 // FlushToken 清空token
@@ -544,18 +563,35 @@ func (us *UserService) getAdminUserCount() int64 {
 	return count
 }
 
+// tokenExpireDuration 用户 token 默认有效期
+func (us *UserService) tokenExpireDuration() time.Duration {
+	exp := Config.App.TokenExpire
+	if exp <= 0 {
+		//默认七天
+		exp = 7 * 24 * time.Hour
+	}
+	return exp
+}
+
+// capByUserExpire 把 token 过期时间收敛到账号有效期之前。
+func (us *UserService) capByUserExpire(u *model.User, exp int64) int64 {
+	if u != nil && u.ExpireAt > 0 && u.ExpireAt < exp {
+		return u.ExpireAt
+	}
+	return exp
+}
+
 // UserTokenExpireTimestamp 生成用户token过期时间
 func (us *UserService) UserTokenExpireTimestamp() int64 {
-	exp := Config.App.TokenExpire
-	if exp == 0 {
-		//默认七天
-		exp = 604800
-	}
-	return time.Now().Add(exp).Unix()
+	return time.Now().Add(us.tokenExpireDuration()).Unix()
 }
 
 func (us *UserService) RefreshAccessToken(ut *model.UserToken) {
-	ut.ExpiredAt = us.UserTokenExpireTimestamp()
+	exp := us.UserTokenExpireTimestamp()
+	if ut.UserId != 0 {
+		exp = us.capByUserExpire(us.InfoById(ut.UserId), exp)
+	}
+	ut.ExpiredAt = exp
 	DB.Model(ut).Update("expired_at", ut.ExpiredAt)
 }
 

@@ -24,6 +24,11 @@ func NewJwt(key string, tokenExpireDuration time.Duration) *Jwt {
 }
 
 func (s *Jwt) GenerateToken(userId uint) string {
+	return s.GenerateTokenWithExpire(userId, time.Now().Add(s.TokenExpireDuration))
+}
+
+// GenerateTokenWithExpire 生成指定过期时间的 token（用于账号有效期早于默认 token 有效期的情况）。
+func (s *Jwt) GenerateTokenWithExpire(userId uint, expireAt time.Time) string {
 	if len(s.Key) == 0 {
 		fmt.Println("jwt key is nil")
 		return ""
@@ -32,7 +37,7 @@ func (s *Jwt) GenerateToken(userId uint) string {
 		UserClaims{
 			UserId: userId,
 			RegisteredClaims: jwt.RegisteredClaims{
-				ExpiresAt: jwt.NewNumericDate(time.Now().Add(s.TokenExpireDuration)),
+				ExpiresAt: jwt.NewNumericDate(expireAt),
 			},
 		})
 	token, err := t.SignedString(s.Key)

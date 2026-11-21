@@ -92,6 +92,15 @@ func (o *Oauth) OidcAuthQueryPre(c *gin.Context) (*model.User, *model.UserToken)
 		return nil, nil
 	}
 
+	if !service.AllService.UserService.CheckUserEnable(u) {
+		msgId := "UserDisabled"
+		if u.IsExpired() {
+			msgId = "UserExpired"
+		}
+		response.Error(c, response.TranslateMsg(c, msgId))
+		return nil, nil
+	}
+
 	if err := service.AllService.UserService.CheckDeviceLimit(u, v.Uuid, v.Id); err != nil {
 		response.Error(c, response.TranslateMsg(c, err.Error()))
 		return nil, nil

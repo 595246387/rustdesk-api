@@ -295,6 +295,12 @@ func DatabaseAutoUpdate() {
 			global.Logger.Error("add users.device_limit err :=>", err)
 		}
 	}
+	// 定制字段：users.expire_at（账号有效期，Unix 秒，0=永久）。同样做幂等补列。
+	if !db.Migrator().HasColumn(&model.User{}, "ExpireAt") {
+		if err := db.Migrator().AddColumn(&model.User{}, "ExpireAt"); err != nil {
+			global.Logger.Error("add users.expire_at err :=>", err)
+		}
+	}
 
 }
 func Migrate(version uint) {

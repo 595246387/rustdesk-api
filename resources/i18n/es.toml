@@ -178,6 +178,11 @@ description = "Usuario pendiente."
 one = "La cuenta está pendiente de aprobación del administrador."
 other = "La cuenta está pendiente de aprobación del administrador."
 
+[UserExpired]
+description = "Cuenta caducada."
+one = "La cuenta ha caducado. Póngase en contacto con el administrador."
+other = "La cuenta ha caducado. Póngase en contacto con el administrador."
+
 [RegisterTooFrequent]
 description = "Registro demasiado frecuente."
 one = "Demasiados registros desde esta red. Inténtalo más tarde."

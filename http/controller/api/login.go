@@ -67,6 +67,8 @@ func (l *Login) Login(c *gin.Context) {
 		msgId := "UserDisabled"
 		if u.Status == model.COMMON_STATUS_PENDING {
 			msgId = "UserPendingApproval"
+		} else if u.IsExpired() {
+			msgId = "UserExpired"
 		}
 		response.Error(c, response.TranslateMsg(c, msgId))
 		return

@@ -175,6 +175,11 @@ description = "用户待审核。"
 one = "账号正在等待管理员审核，审核通过后即可登录。"
 other = "账号正在等待管理员审核，审核通过后即可登录。"
 
+[UserExpired]
+description = "账号已过期。"
+one = "账号已过期，请联系管理员。"
+other = "账号已过期，请联系管理员。"
+
 [RegisterTooFrequent]
 description = "注册过于频繁。"
 one = "该网络注册过于频繁，请稍后再试。"

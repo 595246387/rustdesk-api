@@ -226,7 +226,7 @@ func (ls *LdapService) mapToLocalUser(cfg *config.Ldap, lu *LdapUser) (*model.Us
 		originalStatus := localUser.Status
 		lu.ToUser(localUser) // merges LDAP data into the existing user
 		localUser.IsAdmin = &isAdmin
-		if err := userService.Update(localUser); err != nil {
+		if err := userService.Update(localUser, nil); err != nil {
 			// If the update fails, revert to original data
 			localUser.Email = originalEmail
 			localUser.Nickname = originalNickname

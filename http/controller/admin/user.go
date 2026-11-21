@@ -127,7 +127,7 @@ func (ct *User) Update(c *gin.Context) {
 		return
 	}
 	u := f.ToUser()
-	err := service.AllService.UserService.Update(u)
+	err := service.AllService.UserService.Update(u, f.ExpireAt)
 	if err != nil {
 		response.Fail(c, 101, response.TranslateMsg(c, "OperationFailed")+err.Error())
 		return

@@ -17,6 +17,8 @@ type UserForm struct {
 	Remark   string           `json:"remark"`
 	// DeviceLimit 不传则保持原值；-1 表示不限制；0 表示暂未分配设备（拒绝新设备登录）。
 	DeviceLimit *int `json:"device_limit" validate:"omitempty,gte=-1"`
+	// ExpireAt 账号有效期（Unix 秒）。不传则保持原值；0 表示永久有效。
+	ExpireAt *int64 `json:"expire_at" validate:"omitempty,gte=0"`
 }
 
 func (uf *UserForm) FromUser(user *model.User) *UserForm {
@@ -30,6 +32,8 @@ func (uf *UserForm) FromUser(user *model.User) *UserForm {
 	uf.Status = user.Status
 	uf.Remark = user.Remark
 	uf.DeviceLimit = user.DeviceLimit
+	expireAt := user.ExpireAt
+	uf.ExpireAt = &expireAt
 	return uf
 }
 func (uf *UserForm) ToUser() *model.User {
@@ -44,6 +48,9 @@ func (uf *UserForm) ToUser() *model.User {
 	user.Status = uf.Status
 	user.Remark = uf.Remark
 	user.DeviceLimit = uf.DeviceLimit
+	if uf.ExpireAt != nil {
+		user.ExpireAt = *uf.ExpireAt
+	}
 	return user
 }
 

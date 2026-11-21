@@ -178,6 +178,11 @@ description = "Utilisateur en attente."
 one = "Le compte est en attente de validation par un administrateur."
 other = "Le compte est en attente de validation par un administrateur."
 
+[UserExpired]
+description = "Compte expiré."
+one = "Le compte a expiré. Veuillez contacter l'administrateur."
+other = "Le compte a expiré. Veuillez contacter l'administrateur."
+
 [RegisterTooFrequent]
 description = "Inscription trop fréquente."
 one = "Trop d'inscriptions depuis ce réseau. Veuillez réessayer plus tard."
