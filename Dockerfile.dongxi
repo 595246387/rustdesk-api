@@ -1,0 +1,37 @@
+# 定制后端镜像：只编译本仓库代码，前端静态资源由构建上下文里的 resources/admin 提供。
+#
+# 在 api 仓库根目录构建：
+#   rm -rf resources/admin && mkdir -p resources/admin
+#   cp -a ../web/dist/. resources/admin/
+#   docker build -f Dockerfile.dongxi -t rustdesk-api:dongxi .
+#
+# GOARCH 跟随构建机（甲骨文是 arm64）。
+FROM golang:1.23-alpine AS builder
+
+ENV CGO_ENABLED=1 \
+    GOOS=linux \
+    GOFLAGS=-mod=mod \
+    GOPROXY=https://goproxy.cn,direct
+
+RUN apk add --no-cache build-base git tzdata
+
+WORKDIR /src
+COPY . .
+RUN go build -trimpath -ldflags "-s -w" -o /out/apimain ./cmd/apimain.go
+
+FROM alpine:3.20
+
+RUN apk add --no-cache tzdata file
+
+WORKDIR /app
+COPY --from=builder /out/apimain /app/apimain
+COPY --from=builder /src/conf /app/conf
+COPY --from=builder /src/resources /app/resources
+COPY --from=builder /src/docs /app/docs
+
+RUN mkdir -p /app/data /app/runtime && chmod +x /app/apimain
+
+VOLUME /app/data
+EXPOSE 21114
+
+CMD ["./apimain"]
