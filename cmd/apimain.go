@@ -285,6 +285,14 @@ func DatabaseAutoUpdate() {
 		}
 	}
 
+	// 定制字段：users.device_limit 是 v2.7 之后新增的，老库版本号不变不会触发 Migrate，
+	// 这里做一次幂等补列。
+	if !db.Migrator().HasColumn(&model.User{}, "DeviceLimit") {
+		if err := db.Migrator().AddColumn(&model.User{}, "DeviceLimit"); err != nil {
+			global.Logger.Error("add users.device_limit err :=>", err)
+		}
+	}
+
 }
 func Migrate(version uint) {
 	global.Logger.Info("Migrating....", version)
