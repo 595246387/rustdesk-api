@@ -68,6 +68,13 @@ func (l *Login) Login(c *gin.Context) {
 		return
 	}
 
+	// 设备数上限：超过后拒绝新设备登录，已登录设备不受影响。
+	if err := service.AllService.UserService.CheckDeviceLimit(u, f.Uuid, f.Id); err != nil {
+		global.Logger.Warn(fmt.Sprintf("Login Fail: %s %s user=%s uuid=%s", "DeviceLimitExceeded", c.ClientIP(), u.Username, f.Uuid))
+		response.Error(c, response.TranslateMsg(c, "DeviceLimitExceeded"))
+		return
+	}
+
 	//根据refer判断是webclient还是app
 	ref := c.GetHeader("referer")
 	if ref != "" {

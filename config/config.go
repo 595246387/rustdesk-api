@@ -23,6 +23,8 @@ type App struct {
 	DisablePwdLogin  bool          `mapstructure:"disable-pwd-login"`
 	CaptchaThreshold int           `mapstructure:"captcha-threshold"`
 	BanThreshold     int           `mapstructure:"ban-threshold"`
+	// DeviceLimit 每用户最大在线设备数，0 表示不限制；用户表 device_limit 非空时以用户配置为准。
+	DeviceLimit int `mapstructure:"device-limit"`
 }
 type Admin struct {
 	Title           string `mapstructure:"title"`

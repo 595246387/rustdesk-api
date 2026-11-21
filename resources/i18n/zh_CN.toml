@@ -160,3 +160,7 @@ other = "已被封禁。"
 description = "Register success, wait for admin confirm."
 one = "注册成功，请等待管理员审核。"
 other = "注册成功，请等待管理员审核。"
+[DeviceLimitExceeded]
+description = "账号设备数已达上限。"
+one = "该账号已达到最大设备数，请先退出其他设备或联系管理员。"
+other = "该账号已达到最大设备数，请先退出其他设备或联系管理员。"

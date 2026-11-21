@@ -167,3 +167,8 @@ other = "已被禁用。"
 description = "Register success, wait admin confirm."
 one = "註冊成功，等待管理員確認。"
 other = "註冊成功，等待管理員確認。"
+
+[DeviceLimitExceeded]
+description = "帳號裝置數已達上限。"
+one = "該帳號已達到最大裝置數，請先登出其他裝置或聯絡管理員。"
+other = "該帳號已達到最大裝置數，請先登出其他裝置或聯絡管理員。"

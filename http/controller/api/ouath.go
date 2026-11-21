@@ -92,6 +92,11 @@ func (o *Oauth) OidcAuthQueryPre(c *gin.Context) (*model.User, *model.UserToken)
 		return nil, nil
 	}
 
+	if err := service.AllService.UserService.CheckDeviceLimit(u, v.Uuid, v.Id); err != nil {
+		response.Error(c, response.TranslateMsg(c, "DeviceLimitExceeded"))
+		return nil, nil
+	}
+
 	// 删除 OAuth 缓存
 	service.AllService.OauthService.DeleteOauthCache(q.Code)
 

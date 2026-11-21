@@ -167,6 +167,57 @@ func (us *UserService) CheckUserEnable(u *model.User) bool {
 	return u.Status == model.COMMON_STATUS_ENABLE
 }
 
+// CheckDeviceLimit 检查该用户是否还能在这个设备上登录。
+//
+// 设备标识优先 device_uuid，其次 device_id；两者都为空（Web 后台、注册后自动登录）
+// 表示没有设备概念，不参与限制。同一设备重复登录不算新增。
+func (us *UserService) CheckDeviceLimit(u *model.User, deviceUuid, deviceId string) error {
+	if u == nil || u.Id == 0 || (deviceUuid == "" && deviceId == "") {
+		return nil
+	}
+
+	limit := Config.App.DeviceLimit
+	if u.DeviceLimit != nil {
+		limit = *u.DeviceLimit
+	}
+	if limit <= 0 {
+		return nil
+	}
+
+	now := time.Now().Unix()
+
+	// 当前设备已经有有效 token，直接放行（避免重连被拦）。
+	tx := DB.Model(&model.UserToken{}).
+		Where("user_id = ? AND expired_at > ?", u.Id, now)
+	if deviceUuid != "" {
+		tx = tx.Where("device_uuid = ?", deviceUuid)
+	} else {
+		tx = tx.Where("device_id = ?", deviceId)
+	}
+	var existing int64
+	if err := tx.Count(&existing).Error; err != nil {
+		return err
+	}
+	if existing > 0 {
+		return nil
+	}
+
+	// 统计有效 token 里的不同设备数。device_uuid 为空时退回 device_id。
+	var used int64
+	row := DB.Raw(`
+		SELECT COUNT(DISTINCT COALESCE(NULLIF(device_uuid, ''), device_id))
+		FROM user_tokens
+		WHERE user_id = ? AND expired_at > ? AND (device_uuid <> '' OR device_id <> '')
+	`, u.Id, now).Row()
+	if err := row.Scan(&used); err != nil {
+		return err
+	}
+	if used >= int64(limit) {
+		return errors.New("DeviceLimitExceeded")
+	}
+	return nil
+}
+
 // Create 创建
 func (us *UserService) Create(u *model.User) error {
 	// The initial username should be formatted, and the username should be unique

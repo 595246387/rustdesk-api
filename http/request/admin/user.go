@@ -15,6 +15,8 @@ type UserForm struct {
 	IsAdmin  *bool            `json:"is_admin" `
 	Status   model.StatusCode `json:"status" validate:"required,gte=0"`
 	Remark   string           `json:"remark"`
+	// DeviceLimit 不传则保持原值；-1 表示不限制；0 表示跟随全局配置。
+	DeviceLimit *int `json:"device_limit" validate:"omitempty,gte=-1"`
 }
 
 func (uf *UserForm) FromUser(user *model.User) *UserForm {
@@ -27,6 +29,7 @@ func (uf *UserForm) FromUser(user *model.User) *UserForm {
 	uf.IsAdmin = user.IsAdmin
 	uf.Status = user.Status
 	uf.Remark = user.Remark
+	uf.DeviceLimit = user.DeviceLimit
 	return uf
 }
 func (uf *UserForm) ToUser() *model.User {
@@ -40,6 +43,7 @@ func (uf *UserForm) ToUser() *model.User {
 	user.IsAdmin = uf.IsAdmin
 	user.Status = uf.Status
 	user.Remark = uf.Remark
+	user.DeviceLimit = uf.DeviceLimit
 	return user
 }
 
