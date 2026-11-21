@@ -252,3 +252,8 @@ other = "Votre code de vérification est {{.Code}}. Il est valable {{.Minutes}} 
 description = "Messagerie non configurée."
 one = "Le service d'e-mail n'est pas configuré. Contactez l'administrateur."
 other = "Le service d'e-mail n'est pas configuré. Contactez l'administrateur."
+
+[DeviceLimitNotAssigned]
+description = "Aucun appareil attribué."
+one = "Aucun appareil n'est attribué à ce compte. Contactez l'administrateur."
+other = "Aucun appareil n'est attribué à ce compte. Contactez l'administrateur."

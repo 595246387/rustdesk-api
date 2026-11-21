@@ -8,7 +8,7 @@ app:
   ban-threshold: 0 # 0:disabled, >0:enabled
   show-swagger: 0 # 1:启用 0:禁用
   token-expire: 168h
-  device-limit: 0 # 每用户最大在线设备数，0:不限制；用户级 device_limit 非空时优先
+  device-limit: 0 # 全局默认设备数：0 暂未分配（拒绝新设备登录），-1 不限制，>0 上限；用户级 device_limit 非空时优先
   web-sso: true #web auth sso
   disable-pwd-login: false #禁用密码登录
 

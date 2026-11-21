@@ -249,3 +249,8 @@ other = "您的验证码是 {{.Code}}，{{.Minutes}} 分钟内有效。\n\n如�
 description = "邮件未配置。"
 one = "邮件服务未配置，请联系管理员。"
 other = "邮件服务未配置，请联系管理员。"
+
+[DeviceLimitNotAssigned]
+description = "未分配设备。"
+one = "该账号暂未分配可用设备，请联系管理员。"
+other = "该账号暂未分配可用设备，请联系管理员。"

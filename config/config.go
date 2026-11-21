@@ -23,7 +23,8 @@ type App struct {
 	DisablePwdLogin  bool          `mapstructure:"disable-pwd-login"`
 	CaptchaThreshold int           `mapstructure:"captcha-threshold"`
 	BanThreshold     int           `mapstructure:"ban-threshold"`
-	// DeviceLimit 每用户最大在线设备数，0 表示不限制；用户表 device_limit 非空时以用户配置为准。
+	// DeviceLimit 全局默认每用户设备数，0 表示暂未分配设备（拒绝新设备登录），-1 不限制，>0 为上限；
+	// 用户表 device_limit 非空时以用户配置为准。
 	DeviceLimit int `mapstructure:"device-limit"`
 	// RegisterEmailVerify 注册时是否必须通过邮箱验证码校验。
 	RegisterEmailVerify bool `mapstructure:"register-email-verify"`

@@ -257,3 +257,8 @@ other = "您的驗證碼是 {{.Code}}，{{.Minutes}} 分鐘內有效。\n\n如�
 description = "郵件未設定。"
 one = "郵件服務未設定，請聯絡管理員。"
 other = "郵件服務未設定，請聯絡管理員。"
+
+[DeviceLimitNotAssigned]
+description = "未分配裝置。"
+one = "此帳號尚未分配可用裝置，請聯絡管理員。"
+other = "此帳號尚未分配可用裝置，請聯絡管理員。"

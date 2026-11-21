@@ -247,3 +247,8 @@ other = "Your verification code is {{.Code}}. It is valid for {{.Minutes}} minut
 description = "Mail not configured."
 one = "Email delivery is not configured. Please contact the administrator."
 other = "Email delivery is not configured. Please contact the administrator."
+
+[DeviceLimitNotAssigned]
+description = "No devices assigned."
+one = "No devices are assigned to this account yet. Please contact the administrator."
+other = "No devices are assigned to this account yet. Please contact the administrator."

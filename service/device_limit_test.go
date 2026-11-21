@@ -74,16 +74,25 @@ func TestCheckDeviceLimit(t *testing.T) {
 		t.Fatal("expired token should not count, but limit is still reached")
 	}
 
-	// 用户级 -1 覆盖全局限制
+	// 用户级 -1 覆盖为不限制
 	unlimited := -1
 	user.DeviceLimit = &unlimited
 	if err := us.CheckDeviceLimit(user, "uuid-c", "1003"); err != nil {
 		t.Fatalf("user unlimited override should pass: %v", err)
 	}
 
-	// 用户级 0 跟随全局：全局 2 时第 3 台应该被拦
+	// 用户级 0 表示暂未分配设备：拒绝新设备，已有 token 的设备仍可重连
 	zero := 0
 	user.DeviceLimit = &zero
+	if err := us.CheckDeviceLimit(user, "uuid-c", "1003"); err == nil || err.Error() != "DeviceLimitNotAssigned" {
+		t.Fatalf("device_limit 0 should block new device, got %v", err)
+	}
+	if err := us.CheckDeviceLimit(user, "uuid-a", "1001"); err != nil {
+		t.Fatalf("existing device should still pass when device_limit is 0: %v", err)
+	}
+
+	// 未设置用户值时跟随全局：全局 2 时第 3 台被拦
+	user.DeviceLimit = nil
 	Config.App.DeviceLimit = 2
 	if err := us.CheckDeviceLimit(user, "uuid-c", "1003"); err == nil {
 		t.Fatal("global limit 2 should block the third device")
@@ -92,10 +101,11 @@ func TestCheckDeviceLimit(t *testing.T) {
 	if err := us.CheckDeviceLimit(user, "uuid-c", "1003"); err != nil {
 		t.Fatalf("limit 3 should allow third device: %v", err)
 	}
+
+	// 全局 0 同样表示未分配设备
 	Config.App.DeviceLimit = 0
-	user.DeviceLimit = nil
-	if err := us.CheckDeviceLimit(user, "uuid-d", "1004"); err != nil {
-		t.Fatalf("global 0 (unlimited) should pass: %v", err)
+	if err := us.CheckDeviceLimit(user, "uuid-d", "1004"); err == nil || err.Error() != "DeviceLimitNotAssigned" {
+		t.Fatalf("global 0 should block new device, got %v", err)
 	}
 }
 

@@ -15,7 +15,7 @@ type UserForm struct {
 	IsAdmin  *bool            `json:"is_admin" `
 	Status   model.StatusCode `json:"status" validate:"required,gte=0"`
 	Remark   string           `json:"remark"`
-	// DeviceLimit 不传则保持原值；-1 表示不限制；0 表示跟随全局配置。
+	// DeviceLimit 不传则保持原值；-1 表示不限制；0 表示暂未分配设备（拒绝新设备登录）。
 	DeviceLimit *int `json:"device_limit" validate:"omitempty,gte=-1"`
 }
 

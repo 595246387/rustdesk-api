@@ -93,7 +93,7 @@ func (o *Oauth) OidcAuthQueryPre(c *gin.Context) (*model.User, *model.UserToken)
 	}
 
 	if err := service.AllService.UserService.CheckDeviceLimit(u, v.Uuid, v.Id); err != nil {
-		response.Error(c, response.TranslateMsg(c, "DeviceLimitExceeded"))
+		response.Error(c, response.TranslateMsg(c, err.Error()))
 		return nil, nil
 	}
 

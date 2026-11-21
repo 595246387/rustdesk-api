@@ -176,11 +176,13 @@ func (us *UserService) CheckDeviceLimit(u *model.User, deviceUuid, deviceId stri
 		return nil
 	}
 
+	// 设备数上限：用户值优先（0 表示暂未分配设备），未设置时跟随全局配置。
 	limit := Config.App.DeviceLimit
-	if u.DeviceLimit != nil && *u.DeviceLimit != 0 {
+	if u.DeviceLimit != nil {
 		limit = *u.DeviceLimit
 	}
-	if limit <= 0 {
+	if limit < 0 {
+		// 负数表示不限制
 		return nil
 	}
 
@@ -200,6 +202,11 @@ func (us *UserService) CheckDeviceLimit(u *model.User, deviceUuid, deviceId stri
 	}
 	if existing > 0 {
 		return nil
+	}
+
+	// 0 表示该账号尚未分配可用设备：拒绝新设备登录。
+	if limit == 0 {
+		return errors.New("DeviceLimitNotAssigned")
 	}
 
 	// 统计有效 token 里的不同设备数。device_uuid 为空时退回 device_id。
