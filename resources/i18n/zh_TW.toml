@@ -197,3 +197,63 @@ other = "此使用者名稱已被使用。"
 description = "密碼不一致。"
 one = "兩次輸入的密碼不一致。"
 other = "兩次輸入的密碼不一致。"
+
+[EmailRequired]
+description = "需要信箱。"
+one = "請填寫信箱地址。"
+other = "請填寫信箱地址。"
+
+[EmailInvalid]
+description = "信箱格式不正確。"
+one = "請輸入正確的信箱地址。"
+other = "請輸入正確的信箱地址。"
+
+[EmailExists]
+description = "信箱已被使用。"
+one = "此信箱已被註冊。"
+other = "此信箱已被註冊。"
+
+[EmailCodeRequired]
+description = "需要驗證碼。"
+one = "請填寫信箱收到的驗證碼。"
+other = "請填寫信箱收到的驗證碼。"
+
+[EmailCodeInvalid]
+description = "驗證碼不正確。"
+one = "驗證碼不正確。"
+other = "驗證碼不正確。"
+
+[EmailCodeExpired]
+description = "驗證碼已過期。"
+one = "驗證碼已過期，請重新取得。"
+other = "驗證碼已過期，請重新取得。"
+
+[EmailCodeTooManyAttempts]
+description = "驗證碼錯誤次數過多。"
+one = "驗證碼錯誤次數過多，請重新取得。"
+other = "驗證碼錯誤次數過多，請重新取得。"
+
+[EmailCodeResendTooSoon]
+description = "發送過於頻繁。"
+one = "請等待 {{.Seconds}} 秒後再取得驗證碼。"
+other = "請等待 {{.Seconds}} 秒後再取得驗證碼。"
+
+[EmailSendFailed]
+description = "郵件發送失敗。"
+one = "驗證郵件發送失敗，請稍後再試。"
+other = "驗證郵件發送失敗，請稍後再試。"
+
+[EmailCodeSubject]
+description = "驗證碼郵件標題。"
+one = "您的驗證碼"
+other = "您的驗證碼"
+
+[EmailCodeBody]
+description = "驗證碼郵件內容。"
+one = "您的驗證碼是 {{.Code}}，{{.Minutes}} 分鐘內有效。\n\n如果不是您本人操作，請忽略此郵件。"
+other = "您的驗證碼是 {{.Code}}，{{.Minutes}} 分鐘內有效。\n\n如果不是您本人操作，請忽略此郵件。"
+
+[MailNotConfigured]
+description = "郵件未設定。"
+one = "郵件服務未設定，請聯絡管理員。"
+other = "郵件服務未設定，請聯絡管理員。"

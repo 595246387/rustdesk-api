@@ -25,6 +25,8 @@ type App struct {
 	BanThreshold     int           `mapstructure:"ban-threshold"`
 	// DeviceLimit 每用户最大在线设备数，0 表示不限制；用户表 device_limit 非空时以用户配置为准。
 	DeviceLimit int `mapstructure:"device-limit"`
+	// RegisterEmailVerify 注册时是否必须通过邮箱验证码校验。
+	RegisterEmailVerify bool `mapstructure:"register-email-verify"`
 }
 type Admin struct {
 	Title           string `mapstructure:"title"`
@@ -49,6 +51,7 @@ type Config struct {
 	Rustdesk   Rustdesk
 	Proxy      Proxy
 	Ldap       Ldap
+	Mail       Mail
 }
 
 func (a *Admin) Init() {
@@ -95,6 +98,7 @@ func Init(rowVal *Config, path string) *viper.Viper {
 	}
 	rowVal.Rustdesk.LoadKeyFile()
 	rowVal.Admin.Init()
+	rowVal.Mail.Init()
 	return v
 }
 

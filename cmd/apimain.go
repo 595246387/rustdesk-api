@@ -212,6 +212,7 @@ func InitGlobal() {
 	global.LoginLimiter.RegisterProvider(utils.B64StringCaptchaProvider{})
 	// 自助注册限流：每 IP 每小时 5 个、每天 20 个。
 	global.RegisterLimiter = utils.NewRegisterLimiter(5, 20)
+	global.EmailCodeStore = utils.NewEmailCodeStore()
 	DatabaseAutoUpdate()
 }
 

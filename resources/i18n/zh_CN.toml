@@ -189,3 +189,63 @@ other = "该用户名已被使用。"
 description = "密码不一致。"
 one = "两次输入的密码不一致。"
 other = "两次输入的密码不一致。"
+
+[EmailRequired]
+description = "需要邮箱。"
+one = "请填写邮箱地址。"
+other = "请填写邮箱地址。"
+
+[EmailInvalid]
+description = "邮箱格式不正确。"
+one = "请输入正确的邮箱地址。"
+other = "请输入正确的邮箱地址。"
+
+[EmailExists]
+description = "邮箱已被使用。"
+one = "该邮箱已被注册。"
+other = "该邮箱已被注册。"
+
+[EmailCodeRequired]
+description = "需要验证码。"
+one = "请填写邮箱收到的验证码。"
+other = "请填写邮箱收到的验证码。"
+
+[EmailCodeInvalid]
+description = "验证码不正确。"
+one = "验证码不正确。"
+other = "验证码不正确。"
+
+[EmailCodeExpired]
+description = "验证码已过期。"
+one = "验证码已过期，请重新获取。"
+other = "验证码已过期，请重新获取。"
+
+[EmailCodeTooManyAttempts]
+description = "验证码错误次数过多。"
+one = "验证码错误次数过多，请重新获取。"
+other = "验证码错误次数过多，请重新获取。"
+
+[EmailCodeResendTooSoon]
+description = "发送过于频繁。"
+one = "请等待 {{.Seconds}} 秒后再获取验证码。"
+other = "请等待 {{.Seconds}} 秒后再获取验证码。"
+
+[EmailSendFailed]
+description = "邮件发送失败。"
+one = "验证邮件发送失败，请稍后再试。"
+other = "验证邮件发送失败，请稍后再试。"
+
+[EmailCodeSubject]
+description = "验证码邮件标题。"
+one = "您的验证码"
+other = "您的验证码"
+
+[EmailCodeBody]
+description = "验证码邮件正文。"
+one = "您的验证码是 {{.Code}}，{{.Minutes}} 分钟内有效。\n\n如果不是您本人操作，请忽略此邮件。"
+other = "您的验证码是 {{.Code}}，{{.Minutes}} 分钟内有效。\n\n如果不是您本人操作，请忽略此邮件。"
+
+[MailNotConfigured]
+description = "邮件未配置。"
+one = "邮件服务未配置，请联系管理员。"
+other = "邮件服务未配置，请联系管理员。"

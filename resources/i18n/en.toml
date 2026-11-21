@@ -187,3 +187,63 @@ other = "This username already exists."
 description = "Password not match."
 one = "The two passwords do not match."
 other = "The two passwords do not match."
+
+[EmailRequired]
+description = "Email required."
+one = "Please enter your email address."
+other = "Please enter your email address."
+
+[EmailInvalid]
+description = "Email invalid."
+one = "Please enter a valid email address."
+other = "Please enter a valid email address."
+
+[EmailExists]
+description = "Email exists."
+one = "This email address is already registered."
+other = "This email address is already registered."
+
+[EmailCodeRequired]
+description = "Email code required."
+one = "Please enter the verification code sent to your email."
+other = "Please enter the verification code sent to your email."
+
+[EmailCodeInvalid]
+description = "Email code invalid."
+one = "The verification code is incorrect."
+other = "The verification code is incorrect."
+
+[EmailCodeExpired]
+description = "Email code expired."
+one = "The verification code has expired. Please request a new one."
+other = "The verification code has expired. Please request a new one."
+
+[EmailCodeTooManyAttempts]
+description = "Email code too many attempts."
+one = "Too many incorrect attempts. Please request a new code."
+other = "Too many incorrect attempts. Please request a new code."
+
+[EmailCodeResendTooSoon]
+description = "Email code resend too soon."
+one = "Please wait {{.Seconds}} seconds before requesting a new code."
+other = "Please wait {{.Seconds}} seconds before requesting a new code."
+
+[EmailSendFailed]
+description = "Email send failed."
+one = "Failed to send the verification email. Please try again later."
+other = "Failed to send the verification email. Please try again later."
+
+[EmailCodeSubject]
+description = "Email code subject."
+one = "Your verification code"
+other = "Your verification code"
+
+[EmailCodeBody]
+description = "Email code body."
+one = "Your verification code is {{.Code}}. It is valid for {{.Minutes}} minutes.\n\nIf you did not request this, please ignore this email."
+other = "Your verification code is {{.Code}}. It is valid for {{.Minutes}} minutes.\n\nIf you did not request this, please ignore this email."
+
+[MailNotConfigured]
+description = "Mail not configured."
+one = "Email delivery is not configured. Please contact the administrator."
+other = "Email delivery is not configured. Please contact the administrator."

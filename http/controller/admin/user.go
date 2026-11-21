@@ -1,6 +1,10 @@
 package admin
 
 import (
+	"fmt"
+	"strconv"
+	"strings"
+
 	"github.com/gin-gonic/gin"
 	"github.com/lejianwen/rustdesk-api/v2/global"
 	"github.com/lejianwen/rustdesk-api/v2/http/request/admin"
@@ -10,7 +14,6 @@ import (
 	"github.com/lejianwen/rustdesk-api/v2/service"
 	"github.com/lejianwen/rustdesk-api/v2/utils"
 	"gorm.io/gorm"
-	"strconv"
 )
 
 type User struct {
@@ -304,6 +307,86 @@ func (ct *User) GroupUsers(c *gin.Context) {
 	})
 }
 
+// SendRegisterCode 发送注册邮箱验证码
+// @Tags 用户
+// @Summary 发送注册邮箱验证码
+// @Accept  json
+// @Produce  json
+// @Param body body admin.SendRegisterCodeForm true "邮箱"
+// @Success 200 {object} response.Response
+// @Failure 500 {object} response.Response
+// @Router /admin/user/register-code [post]
+func (ct *User) SendRegisterCode(c *gin.Context) {
+	if !global.Config.App.Register {
+		response.Fail(c, 101, response.TranslateMsg(c, "RegisterClosed"))
+		return
+	}
+	f := &admin.SendRegisterCodeForm{}
+	if err := c.ShouldBindJSON(f); err != nil {
+		response.Fail(c, 101, response.TranslateMsg(c, "ParamsError")+err.Error())
+		return
+	}
+	email := NormalizeEmail(f.Email)
+	if email == "" {
+		response.Fail(c, 101, response.TranslateMsg(c, "EmailRequired"))
+		return
+	}
+	if !ValidEmail(email) {
+		response.Fail(c, 101, response.TranslateMsg(c, "EmailInvalid"))
+		return
+	}
+	if service.AllService.UserService.InfoByEmail(email).Id != 0 {
+		response.Fail(c, 101, response.TranslateMsg(c, "EmailExists"))
+		return
+	}
+	if global.EmailCodeStore == nil {
+		response.Fail(c, 101, response.TranslateMsg(c, "OperationFailed"))
+		return
+	}
+
+	code, err := global.EmailCodeStore.Issue(email, realClientIP(c))
+	if err != nil {
+		switch err {
+		case utils.ErrEmailCodeTooSoon:
+			wait := global.EmailCodeStore.ResendAfter(email)
+			response.Fail(c, 101, response.TranslateTempMsg(c, "EmailCodeResendTooSoon", map[string]interface{}{
+				"Seconds": int(wait.Seconds()) + 1,
+			}))
+		case utils.ErrEmailCodeTooOften:
+			response.Fail(c, 101, response.TranslateMsg(c, "RegisterTooFrequent"))
+		default:
+			global.Logger.Warn(fmt.Sprintf("生成注册验证码失败: %v", err))
+			response.Fail(c, 101, response.TranslateMsg(c, "OperationFailed"))
+		}
+		return
+	}
+
+	subject := response.TranslateTempMsg(c, "EmailCodeSubject", nil)
+	body := response.TranslateTempMsg(c, "EmailCodeBody", map[string]interface{}{
+		"Code":    code,
+		"Minutes": int(utils.EmailCodeTTL.Minutes()),
+	})
+	if !global.Config.Mail.Ready() {
+		// 调试模式：SMTP 未配置时把验证码写进日志；生产环境直接报错，避免用户收不到邮件。
+		if global.Config.Gin.Mode == "release" {
+			global.EmailCodeStore.Discard(email)
+			response.Fail(c, 101, response.TranslateMsg(c, "MailNotConfigured"))
+			return
+		}
+		global.Logger.Warn(fmt.Sprintf("SMTP 未配置，注册验证码仅写入日志 email=%s code=%s", email, code))
+	} else if err := utils.SendMail(&global.Config.Mail, email, subject, body); err != nil {
+		global.Logger.Warn(fmt.Sprintf("发送注册验证码失败 email=%s err=%v", email, err))
+		global.EmailCodeStore.Discard(email)
+		response.Fail(c, 101, response.TranslateMsg(c, "EmailSendFailed"))
+		return
+	}
+
+	response.Success(c, gin.H{
+		"resend_after": int(utils.EmailCodeResendAfter.Seconds()),
+		"expires_in":   int(utils.EmailCodeTTL.Seconds()),
+	})
+}
+
 // Register
 func (ct *User) Register(c *gin.Context) {
 	if !global.Config.App.Register {
@@ -324,14 +407,60 @@ func (ct *User) Register(c *gin.Context) {
 		response.Fail(c, 101, response.TranslateMsg(c, "PasswordNotMatchConfirmPassword"))
 		return
 	}
-	// 注册限流：同一 IP 每小时/每天只能注册有限个账号，避免被批量刷号。
-	if global.RegisterLimiter != nil && !global.RegisterLimiter.Allow(realClientIP(c)) {
+
+	// 邮箱：开启验证时必填，任何情况下填写了都要格式正确且未被占用。
+	verifyEmail := global.Config.App.RegisterEmailVerify
+	email := NormalizeEmail(f.Email)
+	if email == "" {
+		if verifyEmail {
+			response.Fail(c, 101, response.TranslateMsg(c, "EmailRequired"))
+			return
+		}
+	} else {
+		if !ValidEmail(email) {
+			response.Fail(c, 101, response.TranslateMsg(c, "EmailInvalid"))
+			return
+		}
+		if service.AllService.UserService.InfoByEmail(email).Id != 0 {
+			response.Fail(c, 101, response.TranslateMsg(c, "EmailExists"))
+			return
+		}
+	}
+
+	// 注册限流：只检查不占名额，实际创建成功后才记录，避免验证码输错消耗配额。
+	clientIP := realClientIP(c)
+	if global.RegisterLimiter != nil && !global.RegisterLimiter.Check(clientIP) {
 		response.Fail(c, 101, response.TranslateMsg(c, "RegisterTooFrequent"))
 		return
 	}
 	if service.AllService.UserService.IsUsernameExists(f.Username) {
 		response.Fail(c, 101, response.TranslateMsg(c, "UsernameExists"))
 		return
+	}
+
+	if verifyEmail {
+		code := strings.TrimSpace(f.Code)
+		if code == "" {
+			response.Fail(c, 101, response.TranslateMsg(c, "EmailCodeRequired"))
+			return
+		}
+		if global.EmailCodeStore == nil {
+			response.Fail(c, 101, response.TranslateMsg(c, "OperationFailed"))
+			return
+		}
+		switch err := global.EmailCodeStore.Verify(email, code); err {
+		case nil:
+			// 校验通过
+		case utils.ErrEmailCodeExpired:
+			response.Fail(c, 101, response.TranslateMsg(c, "EmailCodeExpired"))
+			return
+		case utils.ErrEmailCodeTooMany:
+			response.Fail(c, 101, response.TranslateMsg(c, "EmailCodeTooManyAttempts"))
+			return
+		default:
+			response.Fail(c, 101, response.TranslateMsg(c, "EmailCodeInvalid"))
+			return
+		}
 	}
 
 	// register-status: 1 注册后直接启用；2/3 注册后待管理员审核。
@@ -345,10 +474,13 @@ func (ct *User) Register(c *gin.Context) {
 		regStatus = model.COMMON_STATUS_ENABLE
 	}
 
-	u := service.AllService.UserService.Register(f.Username, f.Email, f.Password, regStatus)
+	u := service.AllService.UserService.Register(f.Username, email, f.Password, regStatus)
 	if u == nil || u.Id == 0 {
 		response.Fail(c, 101, response.TranslateMsg(c, "OperationFailed"))
 		return
+	}
+	if global.RegisterLimiter != nil {
+		global.RegisterLimiter.Record(clientIP)
 	}
 	if regStatus == model.COMMON_STATUS_PENDING {
 		// 需要管理员审核：不返回 token，前端提示后跳转登录页。

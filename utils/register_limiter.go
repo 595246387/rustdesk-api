@@ -29,21 +29,51 @@ func NewRegisterLimiter(hourly, daily int) *RegisterLimiter {
 	}
 }
 
-// Allow 记录一次注册尝试，并返回是否允许。
-func (r *RegisterLimiter) Allow(ip string) bool {
+// Check 只判断是否还允许注册，不占用名额。
+// 配合 Record 使用，可以让校验失败（如验证码输错）不消耗配额。
+func (l *RegisterLimiter) Check(ip string) bool {
+	if ip == "" {
+		ip = "unknown"
+	}
+	l.mu.Lock()
+	defer l.mu.Unlock()
+	return l.checkLocked(ip, time.Now())
+}
+
+// Record 记录一次成功注册。
+func (l *RegisterLimiter) Record(ip string) {
+	if ip == "" {
+		ip = "unknown"
+	}
+	l.mu.Lock()
+	defer l.mu.Unlock()
+	l.records[ip] = append(l.records[ip], time.Now())
+	l.cleanupLocked(time.Now().Add(-24 * time.Hour))
+}
+
+// Allow 检查并记录一次注册，返回是否允许。
+func (l *RegisterLimiter) Allow(ip string) bool {
 	if ip == "" {
 		ip = "unknown"
 	}
 	now := time.Now()
+	l.mu.Lock()
+	defer l.mu.Unlock()
+	if !l.checkLocked(ip, now) {
+		return false
+	}
+	l.records[ip] = append(l.records[ip], now)
+	l.cleanupLocked(now.Add(-24 * time.Hour))
+	return true
+}
+
+func (l *RegisterLimiter) checkLocked(ip string, now time.Time) bool {
 	dayAgo := now.Add(-24 * time.Hour)
 	hourAgo := now.Add(-time.Hour)
 
-	r.mu.Lock()
-	defer r.mu.Unlock()
-
-	kept := make([]time.Time, 0, len(r.records[ip])+1)
+	kept := make([]time.Time, 0, len(l.records[ip])+1)
 	hourCount, dayCount := 0, 0
-	for _, t := range r.records[ip] {
+	for _, t := range l.records[ip] {
 		if t.After(dayAgo) {
 			kept = append(kept, t)
 			dayCount++
@@ -52,25 +82,19 @@ func (r *RegisterLimiter) Allow(ip string) bool {
 			}
 		}
 	}
+	l.records[ip] = kept
 
-	if dayCount >= r.daily || hourCount >= r.hourly {
-		r.records[ip] = kept
-		return false
-	}
-
-	r.records[ip] = append(kept, now)
-	r.cleanupLocked(dayAgo)
-	return true
+	return dayCount < l.daily && hourCount < l.hourly
 }
 
 // cleanupLocked 清理长时间没有注册记录的 IP，避免 map 无限增长。
-func (r *RegisterLimiter) cleanupLocked(dayAgo time.Time) {
-	if len(r.records) <= 1000 {
+func (l *RegisterLimiter) cleanupLocked(cutoff time.Time) {
+	if len(l.records) <= 1000 {
 		return
 	}
-	for ip, list := range r.records {
-		if len(list) == 0 || list[len(list)-1].Before(dayAgo) {
-			delete(r.records, ip)
+	for ip, list := range l.records {
+		if len(list) == 0 || list[len(list)-1].Before(cutoff) {
+			delete(l.records, ip)
 		}
 	}
 }

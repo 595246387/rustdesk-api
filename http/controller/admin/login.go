@@ -175,6 +175,8 @@ func (ct *Login) LoginOptions(c *gin.Context) {
 		"need_captcha": needCaptcha,
 		"disable_pwd":  global.Config.App.DisablePwdLogin,
 		"auto_oidc":    global.Config.App.DisablePwdLogin && len(ops) == 1,
+		// register_email_verify 为 true 时注册页要求填写邮箱验证码。
+		"register_email_verify": global.Config.App.RegisterEmailVerify,
 	})
 }
 

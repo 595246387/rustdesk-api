@@ -39,4 +39,6 @@ var (
 	LoginLimiter *utils.LoginLimiter
 	// RegisterLimiter 自助注册频率限制，防止开放注册后被批量刷号。
 	RegisterLimiter *utils.RegisterLimiter
+	// EmailCodeStore 注册邮箱验证码（15 分钟有效，含发送频率限制）。
+	EmailCodeStore *utils.EmailCodeStore
 )

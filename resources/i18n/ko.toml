@@ -186,3 +186,63 @@ other = "이 사용자 이름은 이미 사용 중입니다."
 description = "비밀번호 불일치."
 one = "두 비밀번호가 일치하지 않습니다."
 other = "두 비밀번호가 일치하지 않습니다."
+
+[EmailRequired]
+description = "이메일 필요."
+one = "이메일 주소를 입력하세요."
+other = "이메일 주소를 입력하세요."
+
+[EmailInvalid]
+description = "이메일 형식 오류."
+one = "올바른 이메일 주소를 입력하세요."
+other = "올바른 이메일 주소를 입력하세요."
+
+[EmailExists]
+description = "이메일 사용 중."
+one = "이미 등록된 이메일 주소입니다."
+other = "이미 등록된 이메일 주소입니다."
+
+[EmailCodeRequired]
+description = "인증번호 필요."
+one = "이메일로 받은 인증번호를 입력하세요."
+other = "이메일로 받은 인증번호를 입력하세요."
+
+[EmailCodeInvalid]
+description = "인증번호 오류."
+one = "인증번호가 올바르지 않습니다."
+other = "인증번호가 올바르지 않습니다."
+
+[EmailCodeExpired]
+description = "인증번호 만료."
+one = "인증번호가 만료되었습니다. 다시 요청하세요."
+other = "인증번호가 만료되었습니다. 다시 요청하세요."
+
+[EmailCodeTooManyAttempts]
+description = "시도 횟수 초과."
+one = "잘못된 시도가 너무 많습니다. 새 인증번호를 요청하세요."
+other = "잘못된 시도가 너무 많습니다. 새 인증번호를 요청하세요."
+
+[EmailCodeResendTooSoon]
+description = "재전송 제한."
+one = "새 인증번호를 요청하려면 {{.Seconds}}초 후에 다시 시도하세요."
+other = "새 인증번호를 요청하려면 {{.Seconds}}초 후에 다시 시도하세요."
+
+[EmailSendFailed]
+description = "메일 전송 실패."
+one = "인증 메일을 보내지 못했습니다. 잠시 후 다시 시도하세요."
+other = "인증 메일을 보내지 못했습니다. 잠시 후 다시 시도하세요."
+
+[EmailCodeSubject]
+description = "인증번호 제목."
+one = "인증번호 안내"
+other = "인증번호 안내"
+
+[EmailCodeBody]
+description = "인증번호 본문."
+one = "인증번호는 {{.Code}} 입니다. {{.Minutes}}분 동안 유효합니다.\n\n본인이 요청하지 않았다면 이 메일을 무시하세요."
+other = "인증번호는 {{.Code}} 입니다. {{.Minutes}}분 동안 유효합니다.\n\n본인이 요청하지 않았다면 이 메일을 무시하세요."
+
+[MailNotConfigured]
+description = "메일 미설정."
+one = "메일 서비스가 설정되지 않았습니다. 관리자에게 문의하세요."
+other = "메일 서비스가 설정되지 않았습니다. 관리자에게 문의하세요."

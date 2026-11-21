@@ -75,6 +75,13 @@ type RegisterForm struct {
 	Email           string `json:"email"` // validate:"required,email"
 	Password        string `json:"password" validate:"required,gte=4,lte=32"`
 	ConfirmPassword string `json:"confirm_password" validate:"required,gte=4,lte=32"`
+	// Code 邮箱验证码，开启 register-email-verify 时必填。
+	Code string `json:"code"`
+}
+
+// SendRegisterCodeForm 发送注册邮箱验证码
+type SendRegisterCodeForm struct {
+	Email string `json:"email"`
 }
 
 type UserTokenBatchDeleteForm struct {

@@ -192,3 +192,63 @@ other = "Ce nom d'utilisateur existe déjà."
 description = "Mots de passe différents."
 one = "Les deux mots de passe ne correspondent pas."
 other = "Les deux mots de passe ne correspondent pas."
+
+[EmailRequired]
+description = "E-mail requis."
+one = "Veuillez saisir votre adresse e-mail."
+other = "Veuillez saisir votre adresse e-mail."
+
+[EmailInvalid]
+description = "E-mail invalide."
+one = "Veuillez saisir une adresse e-mail valide."
+other = "Veuillez saisir une adresse e-mail valide."
+
+[EmailExists]
+description = "E-mail déjà utilisé."
+one = "Cette adresse e-mail est déjà enregistrée."
+other = "Cette adresse e-mail est déjà enregistrée."
+
+[EmailCodeRequired]
+description = "Code requis."
+one = "Veuillez saisir le code reçu par e-mail."
+other = "Veuillez saisir le code reçu par e-mail."
+
+[EmailCodeInvalid]
+description = "Code invalide."
+one = "Le code de vérification est incorrect."
+other = "Le code de vérification est incorrect."
+
+[EmailCodeExpired]
+description = "Code expiré."
+one = "Le code a expiré. Veuillez en demander un nouveau."
+other = "Le code a expiré. Veuillez en demander un nouveau."
+
+[EmailCodeTooManyAttempts]
+description = "Trop de tentatives."
+one = "Trop de tentatives incorrectes. Veuillez demander un nouveau code."
+other = "Trop de tentatives incorrectes. Veuillez demander un nouveau code."
+
+[EmailCodeResendTooSoon]
+description = "Renvoi trop fréquent."
+one = "Veuillez patienter {{.Seconds}} secondes avant de demander un nouveau code."
+other = "Veuillez patienter {{.Seconds}} secondes avant de demander un nouveau code."
+
+[EmailSendFailed]
+description = "Échec de l'envoi."
+one = "L'e-mail de vérification n'a pas pu être envoyé. Réessayez plus tard."
+other = "L'e-mail de vérification n'a pas pu être envoyé. Réessayez plus tard."
+
+[EmailCodeSubject]
+description = "Sujet du code."
+one = "Votre code de vérification"
+other = "Votre code de vérification"
+
+[EmailCodeBody]
+description = "Corps du code."
+one = "Votre code de vérification est {{.Code}}. Il est valable {{.Minutes}} minutes.\n\nSi vous n'êtes pas à l'origine de cette demande, ignorez cet e-mail."
+other = "Votre code de vérification est {{.Code}}. Il est valable {{.Minutes}} minutes.\n\nSi vous n'êtes pas à l'origine de cette demande, ignorez cet e-mail."
+
+[MailNotConfigured]
+description = "Messagerie non configurée."
+one = "Le service d'e-mail n'est pas configuré. Contactez l'administrateur."
+other = "Le service d'e-mail n'est pas configuré. Contactez l'administrateur."
