@@ -5740,9 +5740,17 @@ const docTemplateadmin = `{
                 "avatar": {
                     "type": "string"
                 },
+                "device_limit": {
+                    "description": "不传则保持原值；-1 表示不限制；0 表示暂未分配设备（拒绝新设备登录）。",
+                    "type": "integer"
+                },
                 "email": {
                     "description": "validate:\"required,email\" email不强制",
                     "type": "string"
+                },
+                "expire_at": {
+                    "description": "账号有效期（Unix 秒）。不传则保持原值；0 表示永久有效。",
+                    "type": "integer"
                 },
                 "group_id": {
                     "type": "integer"
@@ -5755,6 +5763,9 @@ const docTemplateadmin = `{
                 },
                 "nickname": {
                     "description": "Password string           ` + "`" + `json:\"password\" validate:\"required,gte=4,lte=20\"` + "`" + `",
+                    "type": "string"
+                },
+                "remark": {
                     "type": "string"
                 },
                 "status": {
@@ -6467,8 +6478,16 @@ const docTemplateadmin = `{
                 "created_at": {
                     "type": "string"
                 },
+                "device_limit": {
+                    "description": "DeviceLimit 每用户设备数上限。nil 跟随全局 app.device-limit，0 暂未分配设备（拒绝新设备登录），",
+                    "type": "integer"
+                },
                 "email": {
                     "type": "string"
+                },
+                "expire_at": {
+                    "description": "ExpireAt 账号有效期（Unix 秒）。0 表示永久有效；到期后无法再登录客户端或后台，",
+                    "type": "integer"
                 },
                 "group_id": {
                     "type": "integer"
@@ -6480,6 +6499,9 @@ const docTemplateadmin = `{
                     "type": "boolean"
                 },
                 "nickname": {
+                    "type": "string"
+                },
+                "remark": {
                     "type": "string"
                 },
                 "status": {
