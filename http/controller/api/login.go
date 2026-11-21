@@ -64,7 +64,11 @@ func (l *Login) Login(c *gin.Context) {
 	}
 
 	if !service.AllService.UserService.CheckUserEnable(u) {
-		response.Error(c, response.TranslateMsg(c, "UserDisabled"))
+		msgId := "UserDisabled"
+		if u.Status == model.COMMON_STATUS_PENDING {
+			msgId = "UserPendingApproval"
+		}
+		response.Error(c, response.TranslateMsg(c, msgId))
 		return
 	}
 

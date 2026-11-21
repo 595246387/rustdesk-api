@@ -172,3 +172,28 @@ other = "註冊成功，等待管理員確認。"
 description = "帳號裝置數已達上限。"
 one = "該帳號已達到最大裝置數，請先登出其他裝置或聯絡管理員。"
 other = "該帳號已達到最大裝置數，請先登出其他裝置或聯絡管理員。"
+
+[UserDisabled]
+description = "使用者已停用。"
+one = "帳號已被管理員停用。"
+other = "帳號已被管理員停用。"
+
+[UserPendingApproval]
+description = "使用者待審核。"
+one = "帳號正在等待管理員審核，審核通過後即可登入。"
+other = "帳號正在等待管理員審核，審核通過後即可登入。"
+
+[RegisterTooFrequent]
+description = "註冊過於頻繁。"
+one = "此網路註冊過於頻繁，請稍後再試。"
+other = "此網路註冊過於頻繁，請稍後再試。"
+
+[UsernameExists]
+description = "使用者名稱已存在。"
+one = "此使用者名稱已被使用。"
+other = "此使用者名稱已被使用。"
+
+[PasswordNotMatchConfirmPassword]
+description = "密碼不一致。"
+one = "兩次輸入的密碼不一致。"
+other = "兩次輸入的密碼不一致。"

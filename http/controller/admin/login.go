@@ -78,11 +78,15 @@ func (ct *Login) Login(c *gin.Context) {
 	}
 
 	if !service.AllService.UserService.CheckUserEnable(u) {
+		msgId := "UserDisabled"
+		if u.Status == model.COMMON_STATUS_PENDING {
+			msgId = "UserPendingApproval"
+		}
 		if needCaptcha {
-			response.Fail(c, 110, response.TranslateMsg(c, "UserDisabled"))
+			response.Fail(c, 110, response.TranslateMsg(c, msgId))
 			return
 		}
-		response.Fail(c, 101, response.TranslateMsg(c, "UserDisabled"))
+		response.Fail(c, 101, response.TranslateMsg(c, msgId))
 		return
 	}
 

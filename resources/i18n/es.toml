@@ -167,3 +167,28 @@ other = "Prohibido."
 description = "Register success, wait admin confirm."
 one = "Registro exitoso, espere la confirmación del administrador."
 other = "Registro exitoso, espere la confirmación del administrador."
+
+[UserDisabled]
+description = "Usuario deshabilitado."
+one = "La cuenta ha sido deshabilitada por un administrador."
+other = "La cuenta ha sido deshabilitada por un administrador."
+
+[UserPendingApproval]
+description = "Usuario pendiente."
+one = "La cuenta está pendiente de aprobación del administrador."
+other = "La cuenta está pendiente de aprobación del administrador."
+
+[RegisterTooFrequent]
+description = "Registro demasiado frecuente."
+one = "Demasiados registros desde esta red. Inténtalo más tarde."
+other = "Demasiados registros desde esta red. Inténtalo más tarde."
+
+[UsernameExists]
+description = "El usuario ya existe."
+one = "Este nombre de usuario ya existe."
+other = "Este nombre de usuario ya existe."
+
+[PasswordNotMatchConfirmPassword]
+description = "Las contraseñas no coinciden."
+one = "Las contraseñas no coinciden."
+other = "Las contraseñas no coinciden."

@@ -167,3 +167,28 @@ other = "Banni."
 description = "Register success wait admin confirm."
 one = "Inscription réussie, veuillez attendre la confirmation de l'administrateur."
 other = "Inscription réussie, veuillez attendre la confirmation de l'administrateur."
+
+[UserDisabled]
+description = "Utilisateur désactivé."
+one = "Le compte a été désactivé par un administrateur."
+other = "Le compte a été désactivé par un administrateur."
+
+[UserPendingApproval]
+description = "Utilisateur en attente."
+one = "Le compte est en attente de validation par un administrateur."
+other = "Le compte est en attente de validation par un administrateur."
+
+[RegisterTooFrequent]
+description = "Inscription trop fréquente."
+one = "Trop d'inscriptions depuis ce réseau. Veuillez réessayer plus tard."
+other = "Trop d'inscriptions depuis ce réseau. Veuillez réessayer plus tard."
+
+[UsernameExists]
+description = "Nom d'utilisateur existant."
+one = "Ce nom d'utilisateur existe déjà."
+other = "Ce nom d'utilisateur existe déjà."
+
+[PasswordNotMatchConfirmPassword]
+description = "Mots de passe différents."
+one = "Les deux mots de passe ne correspondent pas."
+other = "Les deux mots de passe ne correspondent pas."

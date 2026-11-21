@@ -162,3 +162,28 @@ other = "Register success, wait admin confirm."
 description = "The account reached the device limit."
 one = "This account has reached the maximum number of devices. Sign out another device or contact the administrator."
 other = "This account has reached the maximum number of devices. Sign out another device or contact the administrator."
+
+[UserDisabled]
+description = "User disabled."
+one = "The account has been disabled by an administrator."
+other = "The account has been disabled by an administrator."
+
+[UserPendingApproval]
+description = "User pending approval."
+one = "The account is pending administrator approval. You will be able to log in once approved."
+other = "The account is pending administrator approval. You will be able to log in once approved."
+
+[RegisterTooFrequent]
+description = "Register too frequent."
+one = "Too many registrations from this network. Please try again later."
+other = "Too many registrations from this network. Please try again later."
+
+[UsernameExists]
+description = "Username exists."
+one = "This username already exists."
+other = "This username already exists."
+
+[PasswordNotMatchConfirmPassword]
+description = "Password not match."
+one = "The two passwords do not match."
+other = "The two passwords do not match."

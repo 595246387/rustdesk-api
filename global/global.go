@@ -37,4 +37,6 @@ var (
 	Lock         lock.Locker
 	Localizer    func(lang string) *i18n.Localizer
 	LoginLimiter *utils.LoginLimiter
+	// RegisterLimiter 自助注册频率限制，防止开放注册后被批量刷号。
+	RegisterLimiter *utils.RegisterLimiter
 )

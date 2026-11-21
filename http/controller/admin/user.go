@@ -320,9 +320,28 @@ func (ct *User) Register(c *gin.Context) {
 		response.Fail(c, 101, errList[0])
 		return
 	}
+	if f.ConfirmPassword != f.Password {
+		response.Fail(c, 101, response.TranslateMsg(c, "PasswordNotMatchConfirmPassword"))
+		return
+	}
+	// 注册限流：同一 IP 每小时/每天只能注册有限个账号，避免被批量刷号。
+	if global.RegisterLimiter != nil && !global.RegisterLimiter.Allow(realClientIP(c)) {
+		response.Fail(c, 101, response.TranslateMsg(c, "RegisterTooFrequent"))
+		return
+	}
+	if service.AllService.UserService.IsUsernameExists(f.Username) {
+		response.Fail(c, 101, response.TranslateMsg(c, "UsernameExists"))
+		return
+	}
+
+	// register-status: 1 注册后直接启用；2/3 注册后待管理员审核。
 	regStatus := model.StatusCode(global.Config.App.RegisterStatus)
-	// 注册状态可能未配置，默认启用
-	if regStatus != model.COMMON_STATUS_DISABLED && regStatus != model.COMMON_STATUS_ENABLE {
+	switch regStatus {
+	case model.COMMON_STATUS_ENABLE:
+		// 直接启用
+	case model.COMMON_STATUS_DISABLED, model.COMMON_STATUS_PENDING:
+		regStatus = model.COMMON_STATUS_PENDING
+	default:
 		regStatus = model.COMMON_STATUS_ENABLE
 	}
 
@@ -331,9 +350,9 @@ func (ct *User) Register(c *gin.Context) {
 		response.Fail(c, 101, response.TranslateMsg(c, "OperationFailed"))
 		return
 	}
-	if regStatus == model.COMMON_STATUS_DISABLED {
-		// 需要管理员审核
-		response.Fail(c, 101, response.TranslateMsg(c, "RegisterSuccessWaitAdminConfirm"))
+	if regStatus == model.COMMON_STATUS_PENDING {
+		// 需要管理员审核：不返回 token，前端提示后跳转登录页。
+		response.Success(c, gin.H{"pending": true})
 		return
 	}
 	// 注册成功后自动登录

@@ -161,3 +161,28 @@ other = "금지됨."
 description = "Register success wait admin confirm."
 one = "가입 성공, 관리자 확인 대기 중."
 other = "가입 성공, 관리자 확인 대기 중."
+
+[UserDisabled]
+description = "사용자 비활성화."
+one = "계정이 관리자에 의해 비활성화되었습니다."
+other = "계정이 관리자에 의해 비활성화되었습니다."
+
+[UserPendingApproval]
+description = "사용자 승인 대기."
+one = "계정이 관리자 승인 대기 중입니다. 승인 후 로그인할 수 있습니다."
+other = "계정이 관리자 승인 대기 중입니다. 승인 후 로그인할 수 있습니다."
+
+[RegisterTooFrequent]
+description = "등록이 너무 빈번합니다."
+one = "이 네트워크에서 등록 시도가 너무 많습니다. 잠시 후 다시 시도하세요."
+other = "이 네트워크에서 등록 시도가 너무 많습니다. 잠시 후 다시 시도하세요."
+
+[UsernameExists]
+description = "사용자 이름이 이미 존재합니다."
+one = "이 사용자 이름은 이미 사용 중입니다."
+other = "이 사용자 이름은 이미 사용 중입니다."
+
+[PasswordNotMatchConfirmPassword]
+description = "비밀번호 불일치."
+one = "두 비밀번호가 일치하지 않습니다."
+other = "두 비밀번호가 일치하지 않습니다."

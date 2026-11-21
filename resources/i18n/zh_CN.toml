@@ -164,3 +164,28 @@ other = "注册成功，请等待管理员审核。"
 description = "账号设备数已达上限。"
 one = "该账号已达到最大设备数，请先退出其他设备或联系管理员。"
 other = "该账号已达到最大设备数，请先退出其他设备或联系管理员。"
+
+[UserDisabled]
+description = "用户已禁用。"
+one = "账号已被管理员禁用。"
+other = "账号已被管理员禁用。"
+
+[UserPendingApproval]
+description = "用户待审核。"
+one = "账号正在等待管理员审核，审核通过后即可登录。"
+other = "账号正在等待管理员审核，审核通过后即可登录。"
+
+[RegisterTooFrequent]
+description = "注册过于频繁。"
+one = "该网络注册过于频繁，请稍后再试。"
+other = "该网络注册过于频繁，请稍后再试。"
+
+[UsernameExists]
+description = "用户名已存在。"
+one = "该用户名已被使用。"
+other = "该用户名已被使用。"
+
+[PasswordNotMatchConfirmPassword]
+description = "密码不一致。"
+one = "两次输入的密码不一致。"
+other = "两次输入的密码不一致。"
